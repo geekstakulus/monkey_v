@@ -12,7 +12,7 @@ pub const (
 	eof          = 'EOF'
 	// Identifiers + lierals
 	ident        = 'ident'
-	int          = 'INT'
+	int_t          = 'INT'
 	// Operators
 	assign       = '='
 	plus         = '+'
