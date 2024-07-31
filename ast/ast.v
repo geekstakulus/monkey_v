@@ -3,12 +3,14 @@ module ast
 import token
 import strings
 
-pub type Node = LetStatement | ReturnStatement
+pub struct ErrorNode {}
 
-pub type Statement = FnStatement | LetStatement | ReturnStatement
+pub type Node = LetStatement | ReturnStatement | ErrorNode
+
+pub type Statement = FnStatement | LetStatement | ReturnStatement | ErrorNode
 
 pub type Expression = ExpressionStatement | FnStatement | Identifier | IntegerExpression |
-	StringExpression
+	StringExpression | ErrorNode
 
 pub struct Program {
 pub:
@@ -16,11 +18,11 @@ pub:
 }
 
 pub fn (p Program) str() string {
-	mut sb := strings.Builder{}
+	mut sb := strings.new_builder(32)
 	for s in p.statements {
 		// sb.write(s.str())
 		match s {
-			LetStatement { sb.write(s.str()) }
+			LetStatement { sb.write_string(s.str()) }
 			else {}
 		}
 	}
@@ -48,7 +50,9 @@ pub fn (stmt Statement) token_literal() string {
 		LetStatement {
 			return stmt.token_literal()
 		}
-		else {}
+		else {
+			return ''
+		}
 	}
 }
 
@@ -61,16 +65,16 @@ pub:
 }
 
 pub fn (ls LetStatement) str() string {
-	mut sb := strings.Builder{}
-	sb.write(ls.token_literal() + ' ')
-	sb.write(ls.name.str())
-	sb.write(' = ')
+	mut sb := strings.new_builder(32)
+	sb.write_string(ls.token_literal() + ' ')
+	sb.write_string(ls.name.str())
+	sb.write_string(' = ')
 	/*
 	if ls.value is FnStatement | Identifier | IntegerExpression | StringExpression | ExpressionStatement
 		sb.write(ls.value)
 	}
 	*/
-	sb.write(';')
+	sb.write_string(';')
 	return sb.str()
 }
 
@@ -79,14 +83,17 @@ pub fn (ls LetStatement) token_literal() string {
 }
 
 pub struct StringExpression {
+pub:
 	value string
 }
 
 pub struct IntegerExpression {
+pub:
 	value string
 }
 
 pub struct ReturnStatement {
+pub:
 	token        token.Token // the `return` token
 	return_value Expression
 }

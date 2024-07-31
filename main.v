@@ -13,6 +13,10 @@ fn main() {
 	}
 	repl.start(typ)
 */
-	  mut parser := parser.new_parser(os.args[1])
-      parser.parse_top_lvl()
+	if os.args.len > 1 {
+		mut p:= parser.new_parser(os.args[1])
+		p.parse_top_lvl()
+	} else {
+		println('USAGE: monkey_v <filename>')
+	}
 }
