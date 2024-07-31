@@ -7,7 +7,7 @@ pub struct Lexer {
 mut:
 	pos      int // current position in input (points to current char)
 	read_pos int // current position in input (after current char)
-	ch       byte // current char under examination
+	ch       u8 // current char under examination
 }
 
 pub fn new(input string) Lexer {
@@ -28,7 +28,7 @@ fn (mut l Lexer) read_char() {
 	l.read_pos++
 }
 
-fn (l Lexer) peek_char() byte {
+fn (l Lexer) peek_char() u8 {
 	if l.read_pos >= l.input.len {
 		return 0
 	}
@@ -118,7 +118,7 @@ pub fn (mut l Lexer) next_token() token.Token {
 				tok.literal = l.read_identifier()
 				tok.typ = token.lookup_ident(tok.literal)
 			} else if l.ch.is_digit() {
-				tok.typ = token.int
+				tok.typ = token.int_t
 				tok.literal = l.read_number()
 			} else {
 				println(l.ch)
@@ -129,10 +129,10 @@ pub fn (mut l Lexer) next_token() token.Token {
 	return tok
 }
 
-fn new_token(token_type string, char byte) token.Token {
+fn new_token(token_type string, ch u8) token.Token {
 	return token.Token{
 		typ: token_type
-		literal: char.str()
+		literal: ch.str()
 	}
 }
 
@@ -158,6 +158,6 @@ fn (mut l Lexer) skip_whitespaces() {
 	}
 }
 
-fn is_letter(a byte) bool {
+fn is_letter(a u8) bool {
 	return (a >= `a` && a <= `z`) || (a >= `A` && a <= `Z`) || (a == `_`)
 }
